@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Witness and Visibility - Expressive Arts Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --silver-light: #C0C0C0;
+            --moon-silver: #B8C5D0;
+            --deep-indigo: #2C3E6B;
+            --twilight: #4A5568;
+            --soft-pearl: #E8ECF1;
+            --warm-ivory: #F7F5F0;
+            --witness-gold: #C9A96E;
+            --gentle-rose: #D4A0A0;
+            --shadow-blue: #3B4F7A;
+            --mist: #D6DCE5;
+            --parchment: #F0EDE6;
+            --midnight: #1a1f36;
+            --slate: #4A5568;
+            --gradient-witness: linear-gradient(135deg, #3B4F7A 0%, #C9A96E 100%);
+            --gradient-mirror: linear-gradient(135deg, #B8C5D0 0%, #D4A0A0 100%);
+            --gradient-reveal: linear-gradient(135deg, #2C3E6B 0%, #4A5568 100%);
+            --gradient-seen: linear-gradient(135deg, #C9A96E 0%, #D4A0A0 100%);
+        }
+
+        body {
+            font-family: 'EB Garamond', Georgia, serif;
+            background: var(--parchment);
+            min-height: 100vh;
+            color: var(--midnight);
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.7;
+        }
+
+        /* Floating background symbols */
+        .bg-symbol {
+            position: fixed;
+            font-family: 'Cinzel', serif;
+            opacity: 0.04;
+            pointer-events: none;
+            font-size: 12rem;
+            color: var(--deep-indigo);
+            z-index: 0;
+        }
+        .bg-symbol.s1 { top: -40px; right: -30px; animation: floatSlow 25s infinite ease-in-out; }
+        .bg-symbol.s2 { bottom: -40px; left: -20px; animation: floatSlow 30s infinite ease-in-out reverse; }
+        .bg-symbol.s3 { top: 40%; right: 5%; font-size: 8rem; animation: floatSlow 20s infinite ease-in-out; animation-delay: -8s; }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-orb.o1 { width: 400px; height: 400px; background: var(--moon-silver); top: -100px; left: -100px; animation: floatSlow 22s infinite ease-in-out; }
+        .bg-orb.o2 { width: 350px; height: 350px; background: var(--witness-gold); bottom: -80px; right: -80px; animation: floatSlow 28s infinite ease-in-out reverse; }
+        .bg-orb.o3 { width: 250px; height: 250px; background: var(--gentle-rose); top: 50%; left: 60%; animation: floatSlow 18s infinite ease-in-out; animation-delay: -5s; }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(20px, -25px) scale(1.05); }
+            66% { transform: translate(-15px, 15px) scale(0.95); }
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(240, 237, 230, 0.92);
+            backdrop-filter: blur(12px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.4rem;
+            border-radius: 40px;
+            border: 1.5px solid var(--mist);
+            background: white;
+            color: var(--twilight);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+        .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-color: var(--witness-gold); }
+        .nav-btn.active { background: var(--gradient-witness); color: white; border-color: transparent; }
+
+        /* Progress */
+        .progress-display {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            color: var(--twilight);
+            letter-spacing: 0.1em;
+        }
+        .progress-track {
+            height: 4px;
+            background: rgba(200, 200, 200, 0.3);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-witness);
+            transition: width 0.6s ease;
+            border-radius: 10px;
+        }
+
+        /* Pages */
+        .page { display: none; animation: fadeIn 0.6s ease; }
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .page-header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            background: var(--gradient-witness);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+        .page-header .subtitle {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--twilight);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 35px rgba(0,0,0,0.06);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gradient-witness);
+        }
+
+        .card h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--deep-indigo);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .card h2 .sym {
+            font-size: 1.3rem;
+            opacity: 0.7;
+        }
+
+        .section-text {
+            color: var(--slate);
+            font-size: 1.05rem;
+            line-height: 1.85;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Breathing Circle */
+        .breath-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2.5rem 0;
+        }
+        .breath-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.15) 0%, rgba(59, 79, 122, 0.08) 100%);
+            border: 2px solid rgba(201, 169, 110, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            color: var(--deep-indigo);
+            letter-spacing: 0.1em;
+        }
+        .breath-circle:hover { transform: scale(1.05); border-color: var(--witness-gold); }
+        .breath-circle.breathing {
+            animation: breatheAnim 8s infinite ease-in-out;
+        }
+        @keyframes breatheAnim {
+            0%, 100% { transform: scale(1); border-color: rgba(201, 169, 110, 0.3); }
+            25% { transform: scale(1.15); border-color: rgba(201, 169, 110, 0.6); }
+            50% { transform: scale(1.15); border-color: rgba(201, 169, 110, 0.6); }
+            75% { transform: scale(1); border-color: rgba(201, 169, 110, 0.3); }
+        }
+
+        /* Quote */
+        .quote-block {
+            background: linear-gradient(135deg, rgba(59, 79, 122, 0.04) 0%, rgba(201, 169, 110, 0.06) 100%);
+            border-left: 3px solid var(--witness-gold);
+            padding: 1.75rem 2rem;
+            border-radius: 0 12px 12px 0;
+            margin: 2rem 0;
+        }
+        .quote-block p {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--deep-indigo);
+            line-height: 1.8;
+        }
+        .quote-block .attribution {
+            font-style: normal;
+            font-size: 0.9rem;
+            color: var(--twilight);
+            margin-top: 0.75rem;
+            display: block;
+        }
+
+        /* Concept Cards (expandable) */
+        .concept-card {
+            background: linear-gradient(135deg, rgba(232, 236, 241, 0.5) 0%, rgba(247, 245, 240, 0.8) 100%);
+            border: 1px solid rgba(200, 200, 200, 0.3);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .concept-card:hover { border-color: var(--witness-gold); }
+        .concept-header {
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .concept-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--deep-indigo);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .concept-title .sym { opacity: 0.6; }
+        .expand-icon {
+            font-size: 0.8rem;
+            color: var(--twilight);
+            transition: transform 0.3s ease;
+        }
+        .concept-card.open .expand-icon { transform: rotate(180deg); }
+        .concept-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        .concept-card.open .concept-content {
+            max-height: 800px;
+        }
+        .concept-inner {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--slate);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .concept-inner strong { color: var(--deep-indigo); }
+
+        /* Station Cards */
+        .station-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin: 2rem 0;
+        }
+        .station-card {
+            background: white;
+            border: 1.5px solid rgba(200, 200, 200, 0.3);
+            border-radius: 14px;
+            padding: 1.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .station-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-color: var(--witness-gold);
+        }
+        .station-card.visited { border-color: var(--witness-gold); }
+        .station-card.visited::after {
+            content: '';
+            position: absolute;
+            top: 10px; right: 10px;
+            width: 10px; height: 10px;
+            background: var(--witness-gold);
+            border-radius: 50%;
+        }
+        .station-symbol {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--deep-indigo);
+            opacity: 0.5;
+            margin-bottom: 0.75rem;
+        }
+        .station-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--deep-indigo);
+            margin-bottom: 0.3rem;
+        }
+        .station-card .station-sub {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--twilight);
+            margin-bottom: 0.75rem;
+        }
+        .station-card p {
+            color: var(--slate);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(26, 31, 54, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: var(--parchment);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.2);
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem; right: 1.25rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--twilight);
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+        }
+        .modal h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--deep-indigo);
+            margin-bottom: 0.5rem;
+        }
+        .modal .modal-sub {
+            font-style: italic;
+            color: var(--twilight);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+        .modal h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--deep-indigo);
+            margin: 1.5rem 0 0.5rem;
+            letter-spacing: 0.05em;
+        }
+        .modal ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0;
+        }
+        .modal ul li {
+            padding: 0.5rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+            color: var(--slate);
+            line-height: 1.7;
+        }
+        .modal ul li::before {
+            content: '\2022';
+            position: absolute;
+            left: 0;
+            color: var(--witness-gold);
+            font-weight: bold;
+        }
+        .modal textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1.5px solid rgba(200, 200, 200, 0.4);
+            border-radius: 10px;
+            font-family: 'EB Garamond', serif;
+            font-size: 1rem;
+            background: white;
+            resize: vertical;
+            min-height: 90px;
+            transition: all 0.3s ease;
+            color: var(--midnight);
+            line-height: 1.6;
+        }
+        .modal textarea:focus {
+            outline: none;
+            border-color: var(--witness-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+        }
+        .modal textarea::placeholder { color: #aaa; font-style: italic; }
+
+        .pass-note {
+            text-align: center;
+            font-style: italic;
+            color: var(--twilight);
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(200,200,200,0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 2rem;
+            background: var(--gradient-witness);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 79, 122, 0.2);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(59, 79, 122, 0.3); }
+        .btn-secondary {
+            background: white;
+            color: var(--deep-indigo);
+            border: 1.5px solid var(--moon-silver);
+            box-shadow: none;
+        }
+        .btn-secondary:hover { border-color: var(--witness-gold); background: rgba(201, 169, 110, 0.05); }
+
+        /* Reflection Section */
+        .reflection-area {
+            margin: 1.5rem 0;
+        }
+        .reflection-area label {
+            display: block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--deep-indigo);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.03em;
+        }
+        .reflection-area textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1.5px solid rgba(200, 200, 200, 0.4);
+            border-radius: 10px;
+            font-family: 'EB Garamond', serif;
+            font-size: 1rem;
+            background: white;
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.3s ease;
+            color: var(--midnight);
+            line-height: 1.6;
+        }
+        .reflection-area textarea:focus {
+            outline: none;
+            border-color: var(--witness-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+        }
+
+        /* Process Card */
+        .process-card {
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.06) 0%, rgba(212, 160, 160, 0.06) 100%);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+        }
+        .process-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--deep-indigo);
+            margin-bottom: 0.75rem;
+        }
+        .process-card p {
+            color: var(--slate);
+            line-height: 1.8;
+        }
+
+        /* Summary result */
+        .summary-box {
+            background: white;
+            border: 1.5px solid var(--witness-gold);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: none;
+        }
+        .summary-box.show { display: block; animation: fadeIn 0.5s ease; }
+        .summary-item {
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(59, 79, 122, 0.03) 0%, rgba(201, 169, 110, 0.03) 100%);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        .summary-item h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            color: var(--deep-indigo);
+            margin-bottom: 0.4rem;
+        }
+        .summary-item p { color: var(--slate); line-height: 1.7; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2rem; }
+            .container { padding: 1.5rem 1rem; }
+            .card { padding: 1.75rem; }
+            .modal { padding: 1.75rem; }
+            .station-grid { grid-template-columns: 1fr; }
+            .nav-bar { gap: 0.4rem; }
+            .nav-btn { padding: 0.5rem 1rem; font-size: 0.75rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Elements -->
+    <div class="bg-symbol s1">&#9672;</div>
+    <div class="bg-symbol s2">&#9674;</div>
+    <div class="bg-symbol s3">&#10022;</div>
+    <div class="bg-orb o1"></div>
+    <div class="bg-orb o2"></div>
+    <div class="bg-orb o3"></div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <button class="nav-btn active" onclick="showPage(0)">Opening</button>
+            <button class="nav-btn" onclick="showPage(1)">Understanding</button>
+            <button class="nav-btn" onclick="showPage(2)">Stations</button>
+            <button class="nav-btn" onclick="showPage(3)">Integration</button>
+        </nav>
+
+        <div class="progress-display" id="progressText">Stations Visited: 0 / 7</div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+
+        <!-- ===================== PAGE 0: OPENING ===================== -->
+        <div class="page active" id="page0">
+            <div class="page-header">
+                <h1>Witness &amp; Visibility</h1>
+                <p class="subtitle">The Courage of Being Seen</p>
+            </div>
+
+            <div class="card">
+                <h2><span class="sym">&#9672;</span> Opening Meditation</h2>
+
+                <div class="quote-block">
+                    <p>"To be seen, to be truly seen, is both the deepest human longing and the deepest human fear."</p>
+                    <span class="attribution">-- adapted from D.W. Winnicott</span>
+                </div>
+
+                <div class="section-text">
+                    <p>Find a position that feels right for your body. You do not need to close your eyes. You can soften your gaze, or look at a single point, or close them -- whatever allows you to turn inward while still feeling safe.</p>
+                    <p style="margin-top: 1rem;">Take a breath. Not a performance of breathing. Just a breath that belongs to you.</p>
+                </div>
+
+                <div class="breath-container">
+                    <div class="breath-circle" id="breathCircle" onclick="toggleBreathing()" role="button" aria-label="Start breathing exercise">
+                        <span id="breathText">Begin</span>
+                    </div>
+                    <p style="margin-top: 1rem; font-style: italic; color: var(--twilight); font-size: 0.9rem;">Breathe in for 4 ... hold for 4 ... out for 6</p>
+                </div>
+
+                <div class="section-text">
+                    <p>Notice what it feels like to arrive here today. Not what you think you should feel. What is actually happening in your body right now.</p>
+                    <p style="margin-top: 1rem;">Perhaps there is tension. Perhaps relief. Perhaps a wish to disappear. Perhaps a quiet readiness to be found.</p>
+                    <p style="margin-top: 1rem;">All of it is welcome here.</p>
+                    <p style="margin-top: 1rem;">Today we explore what it means to be witnessed -- and what it means to witness. The difference between being watched and being seen. The masks we wear. The ones we did not choose. And the quiet, radical act of letting yourself be visible.</p>
+                    <p style="margin-top: 1rem;">There is no requirement to share. There is no requirement to be brave. There is only an invitation to be honest with yourself about what happens when you imagine being truly seen.</p>
+                </div>
+
+                <div class="quote-block" style="margin-top: 2rem;">
+                    <p>"The most precious gift we can offer others is our presence. When mindfulness embraces those we love, they will bloom like flowers."</p>
+                    <span class="attribution">-- Thich Nhat Hanh</span>
+                </div>
+            </div>
+
+            <!-- Process Over Product -->
+            <div class="card">
+                <h2><span class="sym">&#10022;</span> The Frame: Process Over Product</h2>
+
+                <div class="section-text">
+                    <p>Before we begin, a few words about what we are doing here and why it works.</p>
+                </div>
+
+                <div class="process-card">
+                    <h3>Your Art Does Not Need to Be Good</h3>
+                    <p>It does not need to be beautiful, coherent, finished, or impressive. The healing happens in the doing -- in the moment your hand moves across the page, your body shifts in space, your voice cracks open. That is the work. The product is just evidence that you showed up.</p>
+                    <p style="margin-top: 0.75rem;">In expressive arts therapy, we say <strong>process over product.</strong> This means we care about what happens inside you while you create, not what the creation looks like when you are done. The smudge, the crossed-out word, the movement that felt awkward -- those are not failures. They are the therapeutic work in action.</p>
+                </div>
+
+                <div class="process-card">
+                    <h3>How Art-Making Works: Two Gifts at Once</h3>
+                    <p>Creative expression does something remarkable -- it offers <strong>two things simultaneously</strong> that are usually hard to access together:</p>
+                    <p style="margin-top: 0.75rem;"><strong>1. Regulation.</strong> The rhythmic, sensory act of making art -- the movement of the hand, the texture of materials, the vibration of sound, the focus of attention on a single task -- activates your parasympathetic nervous system. It literally downregulates anxiety. When you are absorbed in color mixing, or drumming a rhythm, or shaping clay, your body shifts out of threat mode and into a state of engaged calm. This is not a metaphor. Your heart rate slows. Your breathing deepens. Your prefrontal cortex comes back online. Art-making is a <em>somatic intervention</em> disguised as creative play.</p>
+                    <p style="margin-top: 0.75rem;"><strong>2. Insight.</strong> At the same time, because creative expression bypasses the verbal, analytical mind, it can access material that talk therapy sometimes cannot reach. Feelings, memories, and truths that live in the body rather than in language can surface through image, movement, and sound. You may find yourself drawing something you did not plan, writing a sentence that surprises you, or moving in a way that suddenly makes an emotion visible. This is the art speaking back to you. It knows things you have not yet put into words.</p>
+                    <p style="margin-top: 0.75rem;">This dual action -- calming the nervous system <em>while</em> opening a window to deeper knowing -- is what makes expressive arts uniquely powerful. You do not have to choose between feeling safe and feeling deeply. The creative process holds both.</p>
+                </div>
+
+                <div class="process-card">
+                    <h3>This Is Especially True Today</h3>
+                    <p>Visibility is the theme, and your nervous system may want to perform. To make something "worthy" of being seen. Notice that impulse with compassion. Then let your art be messy, unfinished, raw, strange, ugly, tender, incomplete. Let it be exactly what it is. That is the most visible thing you can do.</p>
+                    <p style="margin-top: 0.75rem;">If anxiety shows up -- and it might, because being seen is vulnerable territory -- trust that the act of creating will help your body settle. You do not need to manage the anxiety first and then make art. The art-making <em>is</em> the settling. Pick up the materials and let your hands lead.</p>
+                </div>
+
+                <div class="process-card">
+                    <h3>You Have Choice at Every Step</h3>
+                    <p>You can pass on any station. You can participate without sharing. You can share without explaining. You can change your mind. Your boundaries are not obstacles to this work -- they are the work.</p>
+                    <p style="margin-top: 0.75rem;">There is no right way to do this. There is no hidden test. There is only an invitation to be in relationship with materials, with your body, and with whatever wants to emerge. Some of what emerges may surprise you. That is the insight doing its work. Welcome it with curiosity rather than judgment.</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn" onclick="showPage(1)">Continue to Understanding</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== PAGE 1: PSYCHOEDUCATION ===================== -->
+        <div class="page" id="page1">
+            <div class="page-header">
+                <h1>Understanding Visibility</h1>
+                <p class="subtitle">The Psychology of Being Seen</p>
+            </div>
+
+            <div class="card">
+                <h2><span class="sym">&#9674;</span> Core Concepts</h2>
+                <p class="section-text">Click each card to explore the ideas that inform today's work.</p>
+
+                <!-- Concept 1 -->
+                <div class="concept-card" onclick="toggleConcept(this)">
+                    <div class="concept-header">
+                        <div class="concept-title"><span class="sym">&#9671;</span> Watched vs. Witnessed</div>
+                        <span class="expand-icon">&#9660;</span>
+                    </div>
+                    <div class="concept-content">
+                        <div class="concept-inner">
+                            <p>There is a fundamental difference between being <strong>watched</strong> and being <strong>witnessed</strong>. Being watched is surveillance -- it evaluates, measures, and judges. Being witnessed is presence -- it receives, holds, and honors.</p>
+                            <p style="margin-top: 0.75rem;">In eating disorder treatment, the experience of being watched is often deeply familiar: weighed, monitored, observed during meals, assessed. The clinical gaze, however well-intentioned, can reinforce a feeling of being an object rather than a subject. Recovery asks us to find a different kind of seeing -- one where we are met with presence rather than measurement.</p>
+                            <p style="margin-top: 0.75rem;"><strong>Witnessing</strong> does not require fixing, advising, or responding. It asks only: <em>Can I be fully present to what is here?</em></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concept 2 -->
+                <div class="concept-card" onclick="toggleConcept(this)">
+                    <div class="concept-header">
+                        <div class="concept-title"><span class="sym">&#9671;</span> The Attachment Need to Be Seen</div>
+                        <span class="expand-icon">&#9660;</span>
+                    </div>
+                    <div class="concept-content">
+                        <div class="concept-inner">
+                            <p>D.W. Winnicott described the infant's first mirror as the mother's face. When a baby looks at their caregiver and sees delight, recognition, and attunement reflected back, they learn: <strong>I exist. I am real. I matter.</strong></p>
+                            <p style="margin-top: 0.75rem;">When this mirroring is absent, inconsistent, or distorted -- when the caregiver's face reflects their own anxiety, disappointment, or absence -- the child learns to hide, perform, or disappear. They develop what Winnicott called a "false self": a curated version designed to be acceptable rather than authentic.</p>
+                            <p style="margin-top: 0.75rem;">The eating disorder can function as a false self -- a visible surface that manages how the world perceives us while the true self remains hidden, protected, and unseen. Recovery involves the terrifying, essential work of letting the true self be witnessed.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concept 3 -->
+                <div class="concept-card" onclick="toggleConcept(this)">
+                    <div class="concept-header">
+                        <div class="concept-title"><span class="sym">&#9671;</span> Shame, Visibility &amp; the Nervous System</div>
+                        <span class="expand-icon">&#9660;</span>
+                    </div>
+                    <div class="concept-content">
+                        <div class="concept-inner">
+                            <p>From a polyvagal perspective, shame is a <strong>dorsal vagal collapse in the presence of another person</strong>. The nervous system detects danger in being seen and responds with shutdown: the eyes look down, the body folds inward, the voice goes quiet, the impulse is to vanish.</p>
+                            <p style="margin-top: 0.75rem;">Shame researcher Brene Brown defines shame as the intensely painful feeling that we are fundamentally flawed and unworthy of connection. It differs from guilt ("I did something bad") in that shame says: <strong>"I am bad."</strong></p>
+                            <p style="margin-top: 0.75rem;">The antidote to shame is not willpower or positive thinking. It is <strong>empathic witnessing</strong> -- being seen in your vulnerability and met with compassion rather than judgment. This is why expressive arts can be so powerful: the art becomes a bridge between the hidden self and the witnessing other.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concept 4 -->
+                <div class="concept-card" onclick="toggleConcept(this)">
+                    <div class="concept-header">
+                        <div class="concept-title"><span class="sym">&#9671;</span> Masks, Performance &amp; the Curated Self</div>
+                        <span class="expand-icon">&#9660;</span>
+                    </div>
+                    <div class="concept-content">
+                        <div class="concept-inner">
+                            <p>We all wear masks. This is not pathology -- it is a necessary social skill. The question is not whether we mask, but <strong>whether we chose the mask, and whether we can take it off.</strong></p>
+                            <p style="margin-top: 0.75rem;">Jung described the <strong>persona</strong> as the social face we present to the world. Problems arise when we fuse with the persona -- when we forget there is a self beneath it, or when the mask was never ours to begin with but was imposed by family, culture, or survival.</p>
+                            <p style="margin-top: 0.75rem;">In recovery, common masks include: "I'm fine," the compliant patient, the overachiever, the caretaker, the invisible one, the one who takes up as little space as possible. Today's work invites curiosity about which masks you wear, which ones serve you, and what exists underneath.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concept 5 -->
+                <div class="concept-card" onclick="toggleConcept(this)">
+                    <div class="concept-header">
+                        <div class="concept-title"><span class="sym">&#9671;</span> Radical Visibility as Practice</div>
+                        <span class="expand-icon">&#9660;</span>
+                    </div>
+                    <div class="concept-content">
+                        <div class="concept-inner">
+                            <p>Visibility is not an all-or-nothing state. It exists on a continuum, and you get to choose where you stand at any moment. There is wisdom in hiding. There is courage in revealing. Both can coexist.</p>
+                            <p style="margin-top: 0.75rem;"><strong>Practices of visibility:</strong></p>
+                            <p style="margin-top: 0.5rem;">Letting your face be seen without managing your expression. Saying "I don't know" instead of performing confidence. Allowing your body to take up the space it takes up. Sharing something unpolished. Asking for help. Making art that is not "good." Letting someone see you cry.</p>
+                            <p style="margin-top: 0.75rem;">Each of these is a micro-act of courage. None of them require you to be ready. They only require you to be willing to try.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn" onclick="showPage(2)">Continue to Creative Stations</button>
+            </div>
+        </div>
+
+        <!-- ===================== PAGE 2: STATIONS ===================== -->
+        <div class="page" id="page2">
+            <div class="page-header">
+                <h1>Creative Stations</h1>
+                <p class="subtitle">Seven Pathways Into Visibility</p>
+            </div>
+
+            <div class="card">
+                <h2><span class="sym">&#10022;</span> Choose Your Path</h2>
+                <p class="section-text">Explore any stations that call to you. There is no required order. You may visit one or many. Each station holds an invitation, not an obligation. You can always pass.</p>
+
+                <div class="station-grid">
+                    <!-- Station 1: Visual Arts -->
+                    <div class="station-card" id="st0" onclick="openStation(0)">
+                        <div class="station-symbol">&#9651;</div>
+                        <h3>Visual Arts</h3>
+                        <div class="station-sub">"The Visible &amp; The Hidden"</div>
+                        <p>Create images that explore what you show the world and what remains unseen.</p>
+                    </div>
+
+                    <!-- Station 2: Movement -->
+                    <div class="station-card" id="st1" onclick="openStation(1)">
+                        <div class="station-symbol">&#8734;</div>
+                        <h3>Movement &amp; Dance</h3>
+                        <div class="station-sub">"The Body That Is Seen"</div>
+                        <p>Move between hiding and revealing. Let your body tell its story of visibility.</p>
+                    </div>
+
+                    <!-- Station 3: Music -->
+                    <div class="station-card" id="st2" onclick="openStation(2)">
+                        <div class="station-symbol">&#9835;</div>
+                        <h3>Music &amp; Sound</h3>
+                        <div class="station-sub">"The Voice Beneath the Silence"</div>
+                        <p>Find the sounds of what wants to be heard. Explore the volume of your presence.</p>
+                    </div>
+
+                    <!-- Station 4: Writing -->
+                    <div class="station-card" id="st3" onclick="openStation(3)">
+                        <div class="station-symbol">&#10000;</div>
+                        <h3>Writing</h3>
+                        <div class="station-sub">"Letters From the Unseen Self"</div>
+                        <p>Write from the part of you that has been watching, waiting, hiding, or longing to speak.</p>
+                    </div>
+
+                    <!-- Station 5: Drama -->
+                    <div class="station-card" id="st4" onclick="openStation(4)">
+                        <div class="station-symbol">&#9671;</div>
+                        <h3>Drama &amp; Performance</h3>
+                        <div class="station-sub">"The Mask &amp; The Face"</div>
+                        <p>Embody the masks you wear. Discover what happens when you set them down.</p>
+                    </div>
+
+                    <!-- Station 6: Fashion -->
+                    <div class="station-card" id="st5" onclick="openStation(5)">
+                        <div class="station-symbol">&#10023;</div>
+                        <h3>Fashion &amp; Adornment</h3>
+                        <div class="station-sub">"Dressing the True Self"</div>
+                        <p>Explore how you present yourself to the world. What armor? What invitation?</p>
+                    </div>
+
+                    <!-- Station 7: Open Intuitive -->
+                    <div class="station-card" id="st6" onclick="openStation(6)">
+                        <div class="station-symbol">&#10038;</div>
+                        <h3>Open Intuitive</h3>
+                        <div class="station-sub">"Follow What Wants to Be Seen"</div>
+                        <p>No rules. Combine mediums. Follow impulse. Trust what emerges.</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button class="btn" onclick="showPage(3)">Continue to Integration</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== PAGE 3: INTEGRATION ===================== -->
+        <div class="page" id="page3">
+            <div class="page-header">
+                <h1>Integration &amp; Closing</h1>
+                <p class="subtitle">Gathering What Was Revealed</p>
+            </div>
+
+            <div class="card">
+                <h2><span class="sym">&#9672;</span> Reflection</h2>
+                <p class="section-text">Take a moment to notice what this experience stirred. There are no right answers. Write as much or as little as feels true.</p>
+
+                <div class="reflection-area">
+                    <label>What surprised you today?</label>
+                    <textarea id="ref1" placeholder="Something unexpected that came up..." oninput="autoSave()"></textarea>
+                </div>
+
+                <div class="reflection-area">
+                    <label>What did your body notice during this work?</label>
+                    <textarea id="ref2" placeholder="Sensations, tension, openness, movement..." oninput="autoSave()"></textarea>
+                </div>
+
+                <div class="reflection-area">
+                    <label>Where do you fall on the spectrum between hiding and being seen right now?</label>
+                    <textarea id="ref3" placeholder="Not where you think you should be. Where you actually are..." oninput="autoSave()"></textarea>
+                </div>
+
+                <div class="reflection-area">
+                    <label>What mask felt most familiar today? What lives underneath it?</label>
+                    <textarea id="ref4" placeholder="The mask you know best..." oninput="autoSave()"></textarea>
+                </div>
+
+                <div class="reflection-area">
+                    <label>What is one small, honest act of visibility you could practice this week?</label>
+                    <textarea id="ref5" placeholder="It does not need to be big. It needs to be real..." oninput="autoSave()"></textarea>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn" onclick="generateSummary()">Generate Summary</button>
+                    <button class="btn btn-secondary" onclick="downloadReflections()">Download Reflections</button>
+                    <button class="btn btn-secondary" onclick="resetAll()">Start Fresh</button>
+                </div>
+
+                <div class="summary-box" id="summaryBox">
+                    <h3 style="font-family: 'Cinzel', serif; color: var(--deep-indigo); margin-bottom: 1.25rem;">Your Witness &amp; Visibility Reflection</h3>
+                    <div id="summaryContent"></div>
+                </div>
+            </div>
+
+            <!-- Closing -->
+            <div class="card">
+                <h2><span class="sym">&#10022;</span> Closing</h2>
+
+                <div class="section-text">
+                    <p>Place one hand somewhere on your body that feels grounding. Your chest. Your knee. Your other hand.</p>
+                    <p style="margin-top: 1rem;">Take one breath for the parts of you that stayed hidden today. They had good reason.</p>
+                    <p style="margin-top: 1rem;">Take one breath for the parts of you that risked being seen. That took courage.</p>
+                    <p style="margin-top: 1rem;">Take one breath for the witness in you -- the part that can hold space for others, and someday, for yourself.</p>
+                </div>
+
+                <div class="quote-block" style="margin-top: 2rem;">
+                    <p>"Perhaps all the dragons in our lives are princesses who are only waiting to see us act, just once, with beauty and courage. Perhaps everything terrible is, in its deepest being, something helpless that wants help from us."</p>
+                    <span class="attribution">-- Rainer Maria Rilke</span>
+                </div>
+
+                <div class="quote-block">
+                    <p>"There is nothing more rare, nor more beautiful, than a person being unapologetically themselves; comfortable in their perfect imperfection. To me, that is the true essence of beauty."</p>
+                    <span class="attribution">-- Steve Maraboli</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Station Modal -->
+    <div class="modal-overlay" id="stationModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeStation()" aria-label="Close">&times;</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Station data
+        const stations = [
+            {
+                title: 'Visual Arts',
+                subtitle: '"The Visible & The Hidden"',
+                symbol: '\u25B3',
+                prompts: [
+                    'Create two images side by side: what the world sees, and what exists underneath.',
+                    'Make a self-portrait that includes both what you show and what you hide. Where is the border between them?',
+                    'Draw or paint your experience of being looked at. Use color, shape, and texture to show what happens in your body when eyes land on you.',
+                    'Create an image of what safety in being seen would look like. What would the light be like? Who would be there? How close?',
+                    'Make a mask from paper or collage materials. Decorate the outside as the world sees you. Decorate the inside as you actually are.'
+                ],
+                materials: 'Drawing materials, paint, collage supplies, paper for mask-making, magazines',
+                reflection: 'What emerged that you did not plan? What was the relationship between the visible and hidden parts of your image?'
+            },
+            {
+                title: 'Movement & Dance',
+                subtitle: '"The Body That Is Seen"',
+                symbol: '\u221E',
+                prompts: [
+                    'Begin by making yourself as small and invisible as possible. Then, very slowly, allow yourself to expand and take up space. Notice the moment it becomes uncomfortable.',
+                    'Dance the difference between performing and being present. When does your movement become about how it looks? When does it become about how it feels?',
+                    'Move with your eyes closed, then open them. Notice what shifts. Dance the transition between private movement and being witnessed.',
+                    'Create a gesture sequence: one movement for hiding, one for peeking out, one for being fully present. Repeat and let it evolve.',
+                    'Find the movement your body wants to make that you normally suppress. The stretch that is too big. The sway that is too loose. The stillness that lasts too long. Let it happen.'
+                ],
+                materials: 'Open space, optional fabric or scarves for covering/revealing',
+                reflection: 'What did your body want to do that surprised you? Where is your edge between comfort and visibility?'
+            },
+            {
+                title: 'Music & Sound',
+                subtitle: '"The Voice Beneath the Silence"',
+                symbol: '\u266B',
+                prompts: [
+                    'Explore the full range of your voice -- from whisper to full volume. Where does it feel safe? Where does it feel dangerous? Where does it feel like you?',
+                    'Create a soundscape for "being invisible." Then create one for "being seen." Let them overlap.',
+                    'Use rhythm to express what you cannot say in words. Let your hands, your feet, your voice find the beat of your hidden truth.',
+                    'Curate a short playlist: songs for hiding, songs for being found, songs for choosing to be visible. What do they have in common?',
+                    'Make the sound of the mask coming off. What does that sound like? Is it sudden or gradual? Loud or quiet?'
+                ],
+                materials: 'Drums, shakers, voice, body percussion, phone for playlist curation',
+                reflection: 'What happened when you gave volume to something that is usually quiet? What does your authentic sound feel like?'
+            },
+            {
+                title: 'Writing',
+                subtitle: '"Letters From the Unseen Self"',
+                symbol: '\u2710',
+                prompts: [
+                    'Write a letter from the part of you that has been hiding. What does it want the world to know? What has it been protecting?',
+                    'Write a letter from the part of you that longs to be seen. What would it say if it believed it would be received with love?',
+                    'Describe yourself as a close friend would describe you. Then describe yourself as your inner critic describes you. Then write the version that is true.',
+                    'Write a scene: you walk into a room. Everyone looks at you. What happens in your body? What do you imagine they see? What do you wish they could see?',
+                    'Automatic writing: set a timer for 5 minutes and write without stopping on the prompt "If you really saw me, you would see..."'
+                ],
+                materials: 'Paper, pens, journal',
+                reflection: 'Which voice came most naturally? Which felt most honest? What did the unseen self need to say?'
+            },
+            {
+                title: 'Drama & Performance',
+                subtitle: '"The Mask & The Face"',
+                symbol: '\u25C7',
+                prompts: [
+                    'Create a short monologue as your "public self." Then perform a monologue as your "private self." What changes in your voice, posture, and energy?',
+                    'Enact a scene where someone truly sees you for the first time. What happens? How do you respond?',
+                    'Perform the ritual of putting on your mask in the morning. Make it visible: the gestures, the adjustments, the final check. Then perform taking it off.',
+                    'Create a tableau (frozen image) of "being watched." Then create one of "being witnessed." What is different about your body, your face, your breath?',
+                    'Role-play a conversation where you say something honest that you have been hiding. You do not need to use real names or real situations. Let fiction hold the truth.'
+                ],
+                materials: 'Open space, optional props or fabric',
+                reflection: 'What happened in your body when you performed vulnerability versus performed confidence? Which felt more familiar?'
+            },
+            {
+                title: 'Fashion & Adornment',
+                subtitle: '"Dressing the True Self"',
+                symbol: '\u2737',
+                prompts: [
+                    'How do you use clothing as armor? What parts of your body do you cover, minimize, or draw attention away from? What would you wear if no one were looking?',
+                    'Design (sketch or describe) an outfit for your true self. Not your performing self. Not your recovering self. The one underneath all of it.',
+                    'Create a "visibility spectrum" of your wardrobe: which pieces help you disappear, and which help you take up space? What would you wear on a day you wanted to be seen?',
+                    'Make or modify a piece of wearable art that represents something about you that is usually invisible. A bracelet for your grief. A crown for your rage. A scarf for your tenderness.',
+                    'Explore the difference between dressing for others and dressing for yourself. When do these overlap? When do they conflict?'
+                ],
+                materials: 'Fabric scraps, jewelry-making supplies, paper for design sketches, magazines for mood boards',
+                reflection: 'What did you notice about the relationship between what you wear and how visible you feel? What surprised you?'
+            },
+            {
+                title: 'Open Intuitive',
+                subtitle: '"Follow What Wants to Be Seen"',
+                symbol: '\u2726',
+                prompts: [
+                    'There are no rules here. Use any medium. Combine them. Follow what emerges without planning.',
+                    'Ask yourself: what wants to be made visible right now? Then let your hands, your body, your voice respond.',
+                    'Create something you would never show anyone. Then sit with it. Notice what it feels like to have created something for yourself alone.',
+                    'Make something beautiful out of something you usually hide.',
+                    'Let your creative impulse lead completely. Do not edit. Do not judge. Do not perform. Just create.'
+                ],
+                materials: 'All materials available. Any medium. Any combination.',
+                reflection: 'What emerged when you stopped planning? What did your intuition want to make visible?'
+            }
+        ];
+
+        let visitedStations = new Set();
+        let breathingActive = false;
+        let breathInterval = null;
+
+        // Load saved data
+        function loadSaved() {
+            try {
+                const saved = localStorage.getItem('witnessVisibilityData');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data.visited) {
+                        visitedStations = new Set(data.visited);
+                        visitedStations.forEach(i => {
+                            const el = document.getElementById('st' + i);
+                            if (el) el.classList.add('visited');
+                        });
+                    }
+                    if (data.reflections) {
+                        for (let i = 1; i <= 5; i++) {
+                            const el = document.getElementById('ref' + i);
+                            if (el && data.reflections['ref' + i]) el.value = data.reflections['ref' + i];
+                        }
+                    }
+                    if (data.stationNotes) {
+                        window._stationNotes = data.stationNotes;
+                    }
+                    updateProgress();
+                }
+            } catch(e) { console.log('Load error', e); }
+        }
+
+        function autoSave() {
+            try {
+                const reflections = {};
+                for (let i = 1; i <= 5; i++) {
+                    const el = document.getElementById('ref' + i);
+                    if (el) reflections['ref' + i] = el.value;
+                }
+                localStorage.setItem('witnessVisibilityData', JSON.stringify({
+                    visited: Array.from(visitedStations),
+                    reflections: reflections,
+                    stationNotes: window._stationNotes || {}
+                }));
+            } catch(e) { console.log('Save error', e); }
+        }
+
+        window._stationNotes = {};
+
+        // Navigation
+        function showPage(idx) {
+            document.querySelectorAll('.page').forEach((p, i) => {
+                p.classList.toggle('active', i === idx);
+            });
+            document.querySelectorAll('.nav-btn').forEach((b, i) => {
+                b.classList.toggle('active', i === idx);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Progress
+        function updateProgress() {
+            const count = visitedStations.size;
+            document.getElementById('progressText').textContent = 'Stations Visited: ' + count + ' / 7';
+            document.getElementById('progressFill').style.width = ((count / 7) * 100) + '%';
+        }
+
+        // Breathing
+        function toggleBreathing() {
+            const circle = document.getElementById('breathCircle');
+            const text = document.getElementById('breathText');
+            if (breathingActive) {
+                breathingActive = false;
+                circle.classList.remove('breathing');
+                text.textContent = 'Begin';
+                if (breathInterval) clearInterval(breathInterval);
+            } else {
+                breathingActive = true;
+                circle.classList.add('breathing');
+                const phases = ['Breathe In...', 'Hold...', 'Breathe Out...', 'Rest...'];
+                const durations = [4000, 4000, 6000, 2000];
+                let phase = 0;
+                text.textContent = phases[0];
+                let elapsed = 0;
+                breathInterval = setInterval(() => {
+                    elapsed += 100;
+                    if (elapsed >= durations[phase]) {
+                        elapsed = 0;
+                        phase = (phase + 1) % 4;
+                        text.textContent = phases[phase];
+                    }
+                }, 100);
+            }
+        }
+
+        // Concept cards
+        function toggleConcept(card) {
+            const wasOpen = card.classList.contains('open');
+            // Close all first
+            document.querySelectorAll('.concept-card').forEach(c => c.classList.remove('open'));
+            if (!wasOpen) card.classList.add('open');
+        }
+
+        // Station modal
+        function openStation(idx) {
+            const s = stations[idx];
+            visitedStations.add(idx);
+            document.getElementById('st' + idx).classList.add('visited');
+            updateProgress();
+            autoSave();
+
+            const savedNote = (window._stationNotes && window._stationNotes[idx]) || '';
+
+            let html = '<h3>' + s.symbol + ' ' + s.title + '</h3>';
+            html += '<p class="modal-sub">' + s.subtitle + '</p>';
+            html += '<h4>Exploration Prompts</h4><ul>';
+            s.prompts.forEach(p => { html += '<li>' + p + '</li>'; });
+            html += '</ul>';
+            html += '<h4>Materials</h4><p style="color: var(--slate); margin-bottom: 1rem;">' + s.materials + '</p>';
+            html += '<h4>Reflection</h4><p style="color: var(--slate); font-style: italic; margin-bottom: 1rem;">' + s.reflection + '</p>';
+            html += '<h4>Your Notes</h4>';
+            html += '<textarea id="stationNote" placeholder="What emerged for you at this station..." oninput="saveStationNote(' + idx + ')">' + savedNote + '</textarea>';
+            html += '<p class="pass-note">It is always okay to pass. Your boundaries are welcome here.</p>';
+
+            document.getElementById('modalContent').innerHTML = html;
+            document.getElementById('stationModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function saveStationNote(idx) {
+            const note = document.getElementById('stationNote');
+            if (note) {
+                if (!window._stationNotes) window._stationNotes = {};
+                window._stationNotes[idx] = note.value;
+                autoSave();
+            }
+        }
+
+        function closeStation() {
+            document.getElementById('stationModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('stationModal').addEventListener('click', function(e) {
+            if (e.target === this) closeStation();
+        });
+
+        // Close modal on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeStation();
+        });
+
+        // Generate summary
+        function generateSummary() {
+            const refs = [];
+            const labels = [
+                'What Surprised You',
+                'Body Sensations',
+                'Hiding to Seen Spectrum',
+                'Most Familiar Mask',
+                'Act of Visibility This Week'
+            ];
+            for (let i = 1; i <= 5; i++) {
+                const val = document.getElementById('ref' + i).value.trim();
+                if (val) refs.push({ label: labels[i-1], text: val });
+            }
+
+            let html = '';
+            if (refs.length === 0) {
+                html = '<p style="color: var(--twilight); font-style: italic;">Complete some reflection prompts above to generate your summary.</p>';
+            } else {
+                refs.forEach(r => {
+                    html += '<div class="summary-item"><h4>' + r.label + '</h4><p>' + r.text + '</p></div>';
+                });
+
+                // Station notes
+                const noteLabels = ['Visual Arts', 'Movement & Dance', 'Music & Sound', 'Writing', 'Drama & Performance', 'Fashion & Adornment', 'Open Intuitive'];
+                let hasNotes = false;
+                for (let i = 0; i < 7; i++) {
+                    if (window._stationNotes && window._stationNotes[i] && window._stationNotes[i].trim()) {
+                        if (!hasNotes) {
+                            html += '<div class="summary-item"><h4>Station Notes</h4>';
+                            hasNotes = true;
+                        }
+                        html += '<p><strong>' + noteLabels[i] + ':</strong> ' + window._stationNotes[i] + '</p>';
+                    }
+                }
+                if (hasNotes) html += '</div>';
+
+                html += '<div class="summary-item" style="background: linear-gradient(135deg, rgba(201,169,110,0.08) 0%, rgba(212,160,160,0.08) 100%);">';
+                html += '<h4>Integration</h4>';
+                html += '<p>You visited ' + visitedStations.size + ' of 7 stations today. Every station you entered -- and every one you passed -- was an act of honoring your own boundaries and curiosity. Both are forms of self-witness.</p>';
+                html += '</div>';
+            }
+
+            document.getElementById('summaryContent').innerHTML = html;
+            document.getElementById('summaryBox').classList.add('show');
+            document.getElementById('summaryBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Download
+        function downloadReflections() {
+            let text = 'WITNESS & VISIBILITY - EXPRESSIVE ARTS REFLECTION\n';
+            text += '================================================\n\n';
+            text += 'Date: ' + new Date().toLocaleDateString() + '\n';
+            text += 'Stations Visited: ' + visitedStations.size + ' / 7\n\n';
+
+            const labels = ['What Surprised You', 'Body Sensations', 'Hiding to Seen Spectrum', 'Most Familiar Mask', 'Act of Visibility This Week'];
+            for (let i = 1; i <= 5; i++) {
+                const val = document.getElementById('ref' + i).value.trim();
+                if (val) {
+                    text += labels[i-1].toUpperCase() + '\n';
+                    text += val + '\n\n';
+                }
+            }
+
+            const noteLabels = ['Visual Arts', 'Movement & Dance', 'Music & Sound', 'Writing', 'Drama & Performance', 'Fashion & Adornment', 'Open Intuitive'];
+            let hasNotes = false;
+            for (let i = 0; i < 7; i++) {
+                if (window._stationNotes && window._stationNotes[i] && window._stationNotes[i].trim()) {
+                    if (!hasNotes) {
+                        text += 'STATION NOTES\n';
+                        text += '-------------\n';
+                        hasNotes = true;
+                    }
+                    text += noteLabels[i] + ': ' + window._stationNotes[i] + '\n\n';
+                }
+            }
+
+            text += '\n---\n"Perhaps everything terrible is, in its deepest being,\nsomething helpless that wants help from us." -- Rilke\n';
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'Witness_Visibility_Reflection.txt';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        // Reset
+        function resetAll() {
+            if (confirm('This will clear all your reflections and progress. Continue?')) {
+                localStorage.removeItem('witnessVisibilityData');
+                location.reload();
+            }
+        }
+
+        // Init
+        window.addEventListener('load', loadSaved);
+    </script>
+</body>
+</html>
